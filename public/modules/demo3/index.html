@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo Module 2</title>
+</head>
+
+<body>
+
+<div id="demo3">
+    <h3>Select the chart with the <strong>HIGHER</strong> opacity.</h3>
+
+    <div id="chart1">
+        <h2 id="c1">Chart 1</h2>
+        <iframe src="https://alark.github.io/aesthetics/synthetic2/chart0.4.png" style="width: 100%"></iframe>
+    </div>
+    <div id="chart2"><h2 id="c2">Chart 2</h2></div>
+
+
+    <p>1. Select which chart has the higher opacity.
+        <select id="q1" name="q1">
+            <option value="1">Chart 1</option>
+            <option value="2">Chart 2</option>
+        </select>
+    </p>
+
+</div>
+
+
+<script>
+    (function() {
+        var data = {}
+            , questions = [1]; // questions to be set by d3
+
+        init();
+
+        function init(){
+
+            // Showing opacity for testing purposes only
+            d3.select('#c2').append('div').text(experimentr.opacity);
+
+            //overrides onNext from experimentr
+            d3.select('#next-button')
+                .on('click', function(){
+                    experimentr.endTimer('demo3');
+                    gradeDemo3();
+                    experimentr.addData(data);
+                    experimentr.next();
+                });
+
+            experimentr.startTimer('demo3');
+            experimentr.release();
+            var exp_data = experimentr.data();
+            d3.select('#num_correct').append('div').html(exp_data.demo1_numCorrect);
+            display();
+        }
+
+
+        function display(){
+            // var frame1 = document.getElementById("chart1");
+            // d3.select("#chart1").attr("height", frame1.contentWindow.document.body.scrollHeight + "px")
+            var frame2 = document.getElementById("chart2");
+            d3.select("#chart2")
+                .append("iframe")
+                .attr("src", "https://alark.github.io/aesthetics/synthetic2/chart" + experimentr.opacity +".png")
+                .attr("width", "100%");
+            // .attr("height", frame2.contentWindow.document.body.scrollHeight + "px");
+
+            questions.forEach(function(question){
+                document.getElementById('q' + question).selectedIndex = -1;
+            });
+
+            // This function sets the user's answer after they make a selection
+            d3.select('#q1').on('change', function() {
+                data["demo3_1"] = this.options[this.selectedIndex].value;
+            });
+
+        }
+
+        // Grading function: looks at the opacities of each chart and uses this to
+        // determine whether or not user chose correct chart. Could easily be modified
+        // to look for chart with lower opacity.
+        // TODO: Move this to experimentr.js, make more abstract
+        function gradeDemo3() {
+            var op1 = 0.4;
+            var op2 = experimentr.opacity;
+            console.log("in grade: " + data["demo3_1"]);
+            if ((Math.max(op1, op2) == op1 && Number(data["demo3_1"]) == 1) ||
+                (Math.max(op1, op2) == op2 && Number(data["demo3_1"]) == 2)) {
+                data.demo3_numCorrect = 1;
+                experimentr.opacity = experimentr.opacity + 0.01;
+            } else {
+                experimentr.opacity = experimentr.opacity - 0.03;
+            }
+        }
+
+    }());
+</script>
+</body>
+</html>
