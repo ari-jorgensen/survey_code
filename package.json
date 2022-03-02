@@ -9,7 +9,8 @@
     "express": "^4.17.3",
     "json2csv": "2.x",
     "redis": "0.8.x",
-    "underscore": "^1.13.2"
+    "underscore": "^1.13.2",
+    "body-parser": "^1.19.2"
   },
   "scripts": {
     "start": "node app.js"

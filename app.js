@@ -6,6 +6,7 @@
 var express     = require('express')
   , http        = require('http')
   , redis       = require('redis')
+    , bodyParser = require('body-parser')
   , redisClient
   , port        = process.argv[2] || 8000
   , rport       = process.argv[3] || 6379
@@ -27,7 +28,7 @@ var save = function save(d) {
 
 // Server setup
 var app = express()
-app.use(express.bodyParser())
+app.use(bodyParser())
 app.use(express.static(__dirname + '/public'))
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
