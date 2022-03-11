@@ -8,20 +8,24 @@
 
 <div id="demo1">
     <h3>Select the chart with the <strong>HIGHER</strong> opacity.</h3>
-
-    <div id="chart1">
-        <h2>Chart 1</h2>
-        <iframe src="https://alark.github.io/aesthetics/synthetic2/chart0.4.png" style="width: 100%"></iframe>
+    <div class="chart-container">
+        <h2 class="chart-child">Chart 1</h2>
+        <h2 class="chart-child">Chart 2</h2>
     </div>
-    <div id="chart2"><h2 id="c2">Chart 2</h2></div>
+    <div class="chart-container">
+    </div>
 
 
-    <p>1. Select which chart has the higher opacity.
-        <select id="q1" name="q1">
-            <option value="1">Chart 1</option>
-            <option value="2">Chart 2</option>
-        </select>
-    </p>
+    <div class="chart-container">
+        <p>Select which chart has the higher opacity.
+            <select id="q1" name="q1">
+                <option value="1">Chart 1</option>
+                <option value="2">Chart 2</option>
+            </select>
+        </p>
+    </div>
+
+
 
 
 </div>
@@ -35,6 +39,8 @@
         init();
 
         function init(){
+            console.log(experimentr.data());
+            console.log('opacity: ', experimentr.opacity);
 
             // Showing opacity for testing purposes only
             d3.select('#c2').append('div').text(experimentr.opacity);
@@ -45,7 +51,12 @@
                     experimentr.endTimer('demo1');
                     gradeDemo1();
                     experimentr.addData(data);
-                    experimentr.next();
+                    if (checkConvergenceCriteria() == true) {
+                        alert('Criteria met, survey finished!');
+                    } else {
+                        experimentr.question += 1;
+                        experimentr.next();
+                    }
                 });
 
             experimentr.startTimer('demo1');
@@ -55,14 +66,22 @@
 
 
         function display(){
-            // var frame1 = document.getElementById("chart1");
-            // d3.select("#chart1").attr("height", frame1.contentWindow.document.body.scrollHeight + "px")
-            var frame2 = document.getElementById("chart2");
-            d3.select("#chart2")
+            d3.select('h3')
+                .append('div')
+                .text('Question ' + experimentr.question);
+            
+            d3.select(".chart-container")
+                .append("iframe")
+                .attr("src", "https://alark.github.io/aesthetics/synthetic2/chart" + experimentr.opacityStatic +".png")
+                .attr("class", "chart-child")
+                .attr("height", "350px")
+                .style("border", "none");
+            d3.select(".chart-container")
                 .append("iframe")
                 .attr("src", "https://alark.github.io/aesthetics/synthetic2/chart" + experimentr.opacity +".png")
-                .attr("width", "100%");
-                // .attr("height", frame2.contentWindow.document.body.scrollHeight + "px");
+                .attr("class", "chart-child")
+                .attr("height", "350px")
+                .style("border", "none");
 
             questions.forEach(function(question){
                 document.getElementById('q' + question).selectedIndex = -1;
@@ -80,17 +99,34 @@
         // to look for chart with lower opacity.
         // TODO: Move this to experimentr.js, make more abstract
         function gradeDemo1() {
-            var op1 = 0.4;
+            var op1 = experimentr.opacityStatic;
             var op2 = experimentr.opacity;
-            console.log("in grade: " + data["demo1_1"]);
             if ((Math.max(op1, op2) == op1 && Number(data["demo1_1"]) == 1) ||
                 (Math.max(op1, op2) == op2 && Number(data["demo1_1"]) == 2)) {
+                data[experimentr.question] = 1;
                 data.demo1_numCorrect = 1;
                 experimentr.opacity = experimentr.opacity + 0.01;
             } else {
+                data[experimentr.question] = 0;
                 experimentr.opacity = experimentr.opacity - 0.03;
             }
-            console.log('Num Correct: ', data.demo1_numCorrect);
+            experimentr.opacity = Number(experimentr.opacity.toFixed(2));
+        }
+
+        function checkConvergenceCriteria() {
+            var question = experimentr.question;
+            if (question >= 5) {
+                var data_tmp = experimentr.data();
+                for (var i = 0; i < 5; i++) {
+                    console.log(data_tmp[question - i]);
+                    if (Number(data_tmp[question - i]) == 0) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
 
     }());

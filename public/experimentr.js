@@ -1,6 +1,8 @@
 var experimentr = (function() {
   var experimentr = { version: "0.0.1" }
       , opacity
+      , opacityStatic
+      , question
     , sequence
     , current
     , mainDiv
@@ -45,7 +47,11 @@ var experimentr = (function() {
   function init() {
     if(mainDiv) return;
     // Set the starting opacity for the charts
-    experimentr.opacity = 0.3;
+    // opacity = opacity that will change
+    experimentr.opacity = 0.4;
+    // opacityStatic = static opacity to compare with
+    experimentr.opacityStatic = 0.5;
+    experimentr.question = 1;
     mainDiv = d3.select('body').append('div')
       .attr('id', 'experimentr');
     mainDiv.append('div')
