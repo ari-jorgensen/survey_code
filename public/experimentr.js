@@ -46,11 +46,8 @@ var experimentr = (function() {
   // Create the divs for the experiment content and controls.
   function init() {
     if(mainDiv) return;
-    // Set the starting opacity for the charts
-    // opacity = opacity that will change
-    experimentr.opacity = 0.4;
-    // opacityStatic = static opacity to compare with
-    experimentr.opacityStatic = 0.5;
+    experimentr.opacityStatic = Number(getCookie('opacity'));
+    experimentr.opacity = parseFloat((experimentr.opacityStatic - 0.1).toFixed(1));
     experimentr.question = 1;
     mainDiv = d3.select('body').append('div')
       .attr('id', 'experimentr');
@@ -72,6 +69,23 @@ var experimentr = (function() {
     experimentr.showNext();
     current = current + 1;
     activate(current);
+  }
+
+  // Get opacity cookie that was set from CLI args
+  function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
   }
 
   // This just ends the experiment timer right now, but it might be a good place to send final experiment data (if we are using CSV on the backend).

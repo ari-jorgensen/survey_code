@@ -7,10 +7,12 @@ var express     = require('express')
   , http        = require('http')
   , redis       = require('redis')
     , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
   , redisClient
-  , port        = process.argv[2] || 8000
-  , rport       = process.argv[3] || 6379
-  , debug       = process.argv[4] || null
+    , opacity   = process.argv[2] || 0.4
+  , port        = process.argv[3] || 8000
+  , rport       = process.argv[4] || 6379
+  , debug       = process.argv[5] || null
 
 // Database setup
 redisClient = redis.createClient(rport)
@@ -29,6 +31,21 @@ var save = function save(d) {
 // Server setup
 var app = express()
 app.use(bodyParser())
+app.use(cookieParser())
+
+// Set starting opacity as cookie. This allows us to
+// access the variable from experimentr.js
+app.use(function (req, res, next) {
+  var cookie = req.cookies.opacity;
+  if (cookie === undefined) {
+    res.cookie('opacity', (Number(process.argv[2] || 0.4)));
+    console.log('cookie created successfully');
+  } else {
+    console.log('cookie exists', cookie);
+  }
+  next();
+})
+
 app.use(express.static(__dirname + '/public'))
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
