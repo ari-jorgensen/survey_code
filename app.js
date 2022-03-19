@@ -2,17 +2,20 @@
 'use strict'
 
 // Example run command: `node app.js 9000 6380 true`; listen on port 9000, connect to redis on 6380, debug printing on.
-
+// TODO: add debug mode to show opacity, flag to toggle above/below, add functions to experimentr
+// TODO: module_opacity_above/below_question# -- format for data storage
 var express     = require('express')
   , http        = require('http')
   , redis       = require('redis')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
   , redisClient
-    , opacity   = process.argv[2] || 0.4
-  , port        = process.argv[3] || 8000
-  , rport       = process.argv[4] || 6379
-  , debug       = process.argv[5] || null
+  , port        = process.argv[2] || 8000
+  , rport       = process.argv[3] || 6379
+    , debug     = process.argv[4] || null
+    , opacity   = process.argv[5] || 0.4
+    , method    = process.argv[6] || 'below'
+
 
 // Database setup
 redisClient = redis.createClient(rport)
@@ -36,12 +39,20 @@ app.use(cookieParser())
 // Set starting opacity as cookie. This allows us to
 // access the variable from experimentr.js
 app.use(function (req, res, next) {
-  var cookie = req.cookies.opacity;
-  if (cookie === undefined) {
-    res.cookie('opacity', (Number(process.argv[2] || 0.4)));
-    console.log('cookie created successfully');
-  } else {
-    console.log('cookie exists', cookie);
+  var opacityCookie = req.cookies.opacity;
+  var debugCookie = req.cookies.debug;
+  var methodCookie = req.cookies.methodType;
+  if (opacityCookie === undefined) {
+    res.cookie('opacity', (Number(opacity)));
+    console.log('opacity cookie created successfully: ', opacity);
+  }
+  if (debugCookie === undefined) {
+    res.cookie('debug', debug);
+    console.log('debug cookie created successfully: ', debug);
+  }
+  if (methodCookie === undefined) {
+    res.cookie('methodType', method);
+    console.log('method cookie created successfully: ', method);
   }
   next();
 })

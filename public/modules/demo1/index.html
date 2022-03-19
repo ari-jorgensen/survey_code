@@ -44,15 +44,16 @@
             console.log('opacity static: ', experimentr.opacityStatic);
 
             // Showing opacity for testing purposes only
-            // TODO: Use debug flag to turn on/off
-            d3.select('#chart1').append('div').text(experimentr.opacityStatic);
-            d3.select('#chart2').append('div').text(experimentr.opacity);
+            if (experimentr.debug === 'true') {
+                d3.select('#chart1').append('div').text(experimentr.opacityStatic);
+                d3.select('#chart2').append('div').text(experimentr.opacity);
+            }
 
             //overrides onNext from experimentr
             d3.select('#next-button')
                 .on('click', function(){
                     experimentr.endTimer('demo1');
-                    gradeDemo1();
+                    data[experimentr.dataString+String(experimentr.question)] = experimentr.gradeQuestion(data["demo1_1"]);
                     experimentr.addData(data);
                     if (checkConvergenceCriteria() == true) {
                         alert('Criteria met, survey finished!');
@@ -99,32 +100,13 @@
 
         }
 
-        // Grading function: looks at the opacities of each chart and uses this to
-        // determine whether or not user chose correct chart. Could easily be modified
-        // to look for chart with lower opacity.
-        // TODO: Move this to experimentr.js, make more abstract
-        function gradeDemo1() {
-            var op1 = experimentr.opacityStatic;
-            var op2 = experimentr.opacity;
-            var next;
-            if ((Math.max(op1, op2) == op1 && Number(data["demo1_1"]) == 1) ||
-                (Math.max(op1, op2) == op2 && Number(data["demo1_1"]) == 2)) {
-                data[experimentr.question] = 1;
-                next = Number(experimentr.opacity + 0.01);
-            } else {
-                data[experimentr.question] = 0;
-                next = Number(experimentr.opacity - 0.03);
-            }
-            experimentr.opacity = parseFloat(next.toFixed(2));
-        }
-
         function checkConvergenceCriteria() {
             var question = experimentr.question;
             if (question >= 5) {
                 var data_tmp = experimentr.data();
                 for (var i = 0; i < 5; i++) {
-                    console.log(data_tmp[question - i]);
-                    if (Number(data_tmp[question - i]) == 0) {
+                    console.log(data_tmp[experimentr.dataString+String(question - i)]);
+                    if (Number(data_tmp[experimentr.dataString+String(question - i)]) == 0) {
                         return false;
                     }
                 }

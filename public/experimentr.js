@@ -3,6 +3,9 @@ var experimentr = (function() {
       , opacity
       , opacityStatic
       , question
+      , debug
+      , methodType
+      , dataString
     , sequence
     , current
     , mainDiv
@@ -46,9 +49,16 @@ var experimentr = (function() {
   // Create the divs for the experiment content and controls.
   function init() {
     if(mainDiv) return;
+    experimentr.methodType = getCookie('methodType');
     experimentr.opacityStatic = Number(getCookie('opacity'));
-    experimentr.opacity = parseFloat((experimentr.opacityStatic - 0.1).toFixed(1));
+    if (experimentr.methodType === 'below') {
+      experimentr.opacity = parseFloat((experimentr.opacityStatic - 0.1).toFixed(1));
+    } else {
+      experimentr.opacity = parseFloat((experimentr.opacityStatic + 0.1).toFixed(1));
+    }
+    experimentr.debug = getCookie('debug');
     experimentr.question = 1;
+    experimentr.dataString = 'answer_'+String(experimentr.opacityStatic)+'_'+experimentr.methodType+'_';
     mainDiv = d3.select('body').append('div')
       .attr('id', 'experimentr');
     mainDiv.append('div')
@@ -86,6 +96,34 @@ var experimentr = (function() {
       }
     }
     return "";
+  }
+
+  // Grading function: looks at the opacities of each chart and determines if
+  // the user selected the correct chart. Uses the survey method type
+  // (i.e. above/below) to update the opacity accordingly
+  // Returns 0 if user got question wrong, 1 if correct
+  experimentr.gradeQuestion = (d) => {
+    let op1 = experimentr.opacityStatic;
+    let op2 = experimentr.opacity;
+    let next, res;
+    if ((Math.max(op1, op2) == op1 && Number(d) == 1) ||
+        (Math.max(op1, op2) == op2 && Number(d) == 2)) {
+      res = 1;
+      if (experimentr.methodType === 'above') {
+        next = Number(experimentr.opacity - 0.01);
+      } else {
+        next = Number(experimentr.opacity + 0.01);
+      }
+    } else {
+      res = 0;
+      if (experimentr.methodType === 'above') {
+        next = Number(experimentr.opacity + 0.03);
+      } else {
+        next = Number(experimentr.opacity - 0.03);
+      }
+    }
+    experimentr.opacity = parseFloat(next.toFixed(2));
+    return res;
   }
 
   // This just ends the experiment timer right now, but it might be a good place to send final experiment data (if we are using CSV on the backend).
