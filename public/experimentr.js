@@ -126,6 +126,21 @@ var experimentr = (function() {
     return res;
   }
 
+  experimentr.checkConvergenceCriteria = (d) => {
+    var question = experimentr.question;
+    if (question >= 5) {
+      var data_tmp = experimentr.data();
+      for (var i = 0; i < 5; i++) {
+        console.log(data_tmp[experimentr.dataString+String(question - i)]);
+        if (Number(data_tmp[experimentr.dataString+String(question - i)]) == 0) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   // This just ends the experiment timer right now, but it might be a good place to send final experiment data (if we are using CSV on the backend).
   experimentr.end = function() {
     experimentr.endTimer('experiment');

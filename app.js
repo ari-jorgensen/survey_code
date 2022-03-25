@@ -2,8 +2,6 @@
 'use strict'
 
 // Example run command: `node app.js 9000 6380 true`; listen on port 9000, connect to redis on 6380, debug printing on.
-// TODO: add debug mode to show opacity, flag to toggle above/below, add functions to experimentr
-// TODO: module_opacity_above/below_question# -- format for data storage
 var express     = require('express')
   , http        = require('http')
   , redis       = require('redis')
