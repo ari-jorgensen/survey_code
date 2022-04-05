@@ -39,9 +39,6 @@
         init();
 
         function init(){
-            console.log(experimentr.data());
-            console.log('opacity: ', experimentr.opacity);
-            console.log('opacity static: ', experimentr.opacityStatic);
 
             // Showing opacity for testing purposes only
             if (experimentr.debug === 'true') {
@@ -52,7 +49,7 @@
             //overrides onNext from experimentr
             d3.select('#next-button')
                 .on('click', function(){
-                    experimentr.endTimer('demo1');
+                    experimentr.endTimer(String(experimentr.question));
                     data[experimentr.dataString+String(experimentr.question)] = experimentr.gradeQuestion(data["demo1_1"]);
                     experimentr.addData(data);
                     if (experimentr.checkConvergenceCriteria() == true) {
@@ -65,12 +62,12 @@
                     }
                 });
 
-            experimentr.startTimer('demo1');
+            experimentr.startTimer(String(experimentr.question));
             experimentr.release();
             display();
         }
 
-
+        // TODO: Add confidence slider (1-7)
         function display(){
             d3.select('h3')
                 .append('div')
