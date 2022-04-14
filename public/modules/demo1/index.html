@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Demo Module 1</title>
+    <title>Chart Opacity Comparison</title>
 </head>
 
 <body>
@@ -24,6 +24,27 @@
             </select>
         </p>
     </div>
+    <fieldset class="range__field">
+        <input class="range" type="range" min="1" max="7">
+        <svg width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="16.7%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="33.4%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50.1%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="66.8%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="83%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">1</text>
+            <text class="range__point" x="16.7%" y="14" text-anchor="middle">2</text>
+            <text class="range__point" x="33.4%" y="14" text-anchor="middle">3</text>
+            <text class="range__point" x="50.1%" y="14" text-anchor="middle">4</text>
+            <text class="range__point" x="66.8%" y="14" text-anchor="middle">5</text>
+            <text class="range__point" x="83%" y="14" text-anchor="middle">6</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">7</text>
+        </svg>
+    </fieldset>
 
 
 
@@ -54,8 +75,10 @@
                     experimentr.addData(data);
                     if (experimentr.checkConvergenceCriteria() == true) {
                         alert('Criteria met, survey finished!');
-                        experimentr.end();
-                        experimentr.save(experimentr.data);
+                        experimentr.activate("modules/nasa-tlx");
+                        // experimentr.end();
+                        // experimentr.save(experimentr.data);
+                        // TODO: Add function to clear cookies
                     } else {
                         experimentr.question += 1;
                         experimentr.next();
@@ -67,7 +90,6 @@
             display();
         }
 
-        // TODO: Add confidence slider (1-7)
         function display(){
             d3.select('h3')
                 .append('div')
@@ -95,9 +117,9 @@
                 data["demo1_1"] = this.options[this.selectedIndex].value;
             });
 
+            d3.selectAll("input")
+                .on("change", function() { data["confidence_score_q"+experimentr.question] = this.value; });
         }
-
-
     }());
 </script>
 </body>

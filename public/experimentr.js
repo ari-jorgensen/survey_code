@@ -130,8 +130,7 @@ var experimentr = (function() {
     var question = experimentr.question;
     if (question >= 5) {
       var data_tmp = experimentr.data();
-      for (var i = 0; i < 5; i++) {
-        console.log(data_tmp[experimentr.dataString+String(question - i)]);
+      for (var i = 0; i < 15; i++) {
         if (Number(data_tmp[experimentr.dataString+String(question - i)]) == 0) {
           return false;
         }
