@@ -128,7 +128,7 @@ var experimentr = (function() {
 
   experimentr.checkConvergenceCriteria = (d) => {
     var question = experimentr.question;
-    if (question >= 5) {
+    if (question >= 15) {
       var data_tmp = experimentr.data();
       for (var i = 0; i < 15; i++) {
         if (Number(data_tmp[experimentr.dataString+String(question - i)]) == 0) {

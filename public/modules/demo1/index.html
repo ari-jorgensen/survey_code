@@ -73,12 +73,11 @@
                     experimentr.endTimer(String(experimentr.question));
                     data[experimentr.dataString+String(experimentr.question)] = experimentr.gradeQuestion(data["demo1_1"]);
                     experimentr.addData(data);
-                    if (experimentr.checkConvergenceCriteria() == true) {
+                    if (experimentr.checkConvergenceCriteria() === true) {
                         alert('Criteria met, survey finished!');
-                        experimentr.activate("modules/nasa-tlx");
-                        // experimentr.end();
-                        // experimentr.save(experimentr.data);
-                        // TODO: Add function to clear cookies
+                        document.cookie = 'opacity=;';
+                        document.cookie = 'debug=;';
+                        document.cookie = 'methodType=;';
                     } else {
                         experimentr.question += 1;
                         experimentr.next();
