@@ -102,28 +102,41 @@ var experimentr = (function() {
   // the user selected the correct chart. Uses the survey method type
   // (i.e. above/below) to update the opacity accordingly
   // Returns 0 if user got question wrong, 1 if correct
-  experimentr.gradeQuestion = (d) => {
-    let op1 = experimentr.opacityStatic;
-    let op2 = experimentr.opacity;
-    let next, res;
+  experimentr.gradeQuestion = (d, staticSide) => {
+    let op1, op2;
+    if (staticSide === 1) {
+      op1 = experimentr.opacityStatic;
+      op2 = experimentr.opacity;
+    } else {
+      op1 = experimentr.opacity;
+      op2 = experimentr.opacityStatic
+    }
+    let res;
     if ((Math.max(op1, op2) == op1 && Number(d) == 1) ||
-        (Math.max(op1, op2) == op2 && Number(d) == 2)) {
+        (Math.max(op1, op2) == op2 && Number(d) == 2) ||
+        op1 === op2) {
       res = 1;
-      if (experimentr.methodType === 'above') {
-        next = Number(experimentr.opacity - 0.01);
-      } else {
-        next = Number(experimentr.opacity + 0.01);
-      }
     } else {
       res = 0;
-      if (experimentr.methodType === 'above') {
-        next = Number(experimentr.opacity + 0.03);
-      } else {
-        next = Number(experimentr.opacity - 0.03);
-      }
+    }
+    updateOpacity(res);
+    return res;
+  }
+
+  function updateOpacity(correct) {
+    var next;
+    if (experimentr.methodType === 'above' && correct === 1) {
+      next = Number(experimentr.opacity - 0.01);
+    } else if (experimentr.methodType === 'below' && correct === 1) {
+      console.log('correct')
+      next = Number(experimentr.opacity + 0.01);
+    } else if (experimentr.methodType === 'above' && correct === 0) {
+      next = Number(experimentr.opacity + 0.03);
+    } else {
+      console.log('incorrect')
+      next = Number(experimentr.opacity - 0.03);
     }
     experimentr.opacity = parseFloat(next.toFixed(2));
-    return res;
   }
 
   experimentr.checkConvergenceCriteria = (d) => {
@@ -143,6 +156,15 @@ var experimentr = (function() {
   // This just ends the experiment timer right now, but it might be a good place to send final experiment data (if we are using CSV on the backend).
   experimentr.end = function() {
     experimentr.endTimer('experiment');
+    completeSurvey();
+  }
+
+  function completeSurvey() {
+    experimentr.save();
+    // document.cookie = "opacity=;";
+    // document.cookie = "debug=;";
+    // document.cookie = "methodType=;";
+    location.href = "https://www.rd.com/list/adorable-puppy-pictures/";
   }
 
   // Adds the data in `d` to the experiment data, and saves to server.

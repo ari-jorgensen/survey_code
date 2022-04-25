@@ -40,15 +40,16 @@ app.use(function (req, res, next) {
   var opacityCookie = req.cookies.opacity;
   var debugCookie = req.cookies.debug;
   var methodCookie = req.cookies.methodType;
-  if (opacityCookie === undefined) {
+  console.log('val of cookie: ', opacityCookie);
+  if (opacityCookie === undefined || opacityCookie === "") {
     res.cookie('opacity', (Number(opacity)));
     console.log('opacity cookie created successfully: ', opacity);
   }
-  if (debugCookie === undefined) {
+  if (debugCookie === undefined || debugCookie === "") {
     res.cookie('debug', debug);
     console.log('debug cookie created successfully: ', debug);
   }
-  if (methodCookie === undefined) {
+  if (methodCookie === undefined || methodCookie === "") {
     res.cookie('methodType', method);
     console.log('method cookie created successfully: ', method);
   }

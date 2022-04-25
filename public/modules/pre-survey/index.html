@@ -1,0 +1,31 @@
+
+<div id="demographics" class="pre-survey">
+  <h3 id="demoinstr">
+    Thank you for participating in this survey. Please enter your participant ID in the box below.
+  </h3>
+
+  <div id="participant-id">
+    <label for="id">Participant ID:</label>
+    <input type="text" id="id" name="id">
+  </div>
+</div>
+
+<script>
+  (function() {
+    var data = {};
+
+    experimentr.startTimer('pre-survey');
+
+    d3.selectAll('input')
+            .filter(function(d) { return this.name === 'id' ? this : null; })
+            .on('change', function() { data.participant_id = this.value; validate(); });
+
+    function validate() {
+      if(data.participant_id) {
+        experimentr.endTimer('pre-survey');
+        experimentr.addData(data);
+        experimentr.release();
+      }
+    }
+  }());
+</script>

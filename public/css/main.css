@@ -136,3 +136,8 @@ input.range::-ms-fill-upper {
 .range__field {
   border: 0;
 }
+
+.pre-survey {
+  margin-top: 5rem;
+  font-size: 24px;
+}
